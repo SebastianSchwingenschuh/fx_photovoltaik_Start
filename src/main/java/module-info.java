@@ -1,6 +1,7 @@
 module at.htl.photovoltaik {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.xml.crypto;
 
 
     opens at.htl.photovoltaic to javafx.fxml;
