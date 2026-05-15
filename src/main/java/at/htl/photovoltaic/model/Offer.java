@@ -1,22 +1,25 @@
 package at.htl.photovoltaic.model;
 
 public class Offer {
-    private final int id;
+    private int id;
     private String name;
-    private int NumberOfPanels;
+    private int numberOfPanels;
     private double powerPerPanel;
     private double totalPrice;
 
     public Offer(String name, int numberOfPanels, int powerPerPanel, int totalPrice) {
-        this.id = 0;
         this.name = name;
-        NumberOfPanels = numberOfPanels;
+        this.numberOfPanels = numberOfPanels;
         this.powerPerPanel = powerPerPanel;
         this.totalPrice = totalPrice;
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -28,11 +31,11 @@ public class Offer {
     }
 
     public int getNumberOfPanels() {
-        return NumberOfPanels;
+        return numberOfPanels;
     }
 
     public void setNumberOfPanels(int numberOfPanels) {
-        NumberOfPanels = numberOfPanels;
+        this.numberOfPanels = numberOfPanels;
     }
 
     public double getPowerPerPanel() {
@@ -53,6 +56,6 @@ public class Offer {
 
     @Override
     public String toString() {
-        return String.format("%d: %s, %.1f kWp, %.2f €", this.getId(), getName(), getPowerPerPanel()*getNumberOfPanels(), getTotalPrice());
+        return String.format("%d: %s, %.1f kWp, %.2f €", this.getId(), getName(), getPowerPerPanel() * getNumberOfPanels() / 1000.0, getTotalPrice());
     }
 }
