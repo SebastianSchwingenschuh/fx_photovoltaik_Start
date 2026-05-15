@@ -7,7 +7,7 @@ public class Offer {
     private double powerPerPanel;
     private double totalPrice;
 
-    public Offer(String name, int numberOfPanels, int powerPerPanel, int totalPrice) {
+    public Offer(String name, int numberOfPanels, double powerPerPanel, double totalPrice) {
         this.name = name;
         this.numberOfPanels = numberOfPanels;
         this.powerPerPanel = powerPerPanel;

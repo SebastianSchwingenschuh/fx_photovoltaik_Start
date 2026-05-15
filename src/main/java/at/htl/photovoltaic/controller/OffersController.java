@@ -135,7 +135,7 @@ public class OffersController {
             double power = Double.parseDouble(tfPowerPanel.getText());
             double price = Double.parseDouble(tfTotal.getText());
 
-            Offer newOffer = new Offer(name, panels, panels, panels);
+            Offer newOffer = new Offer(name, panels, power, price);
             repository.addOffer(newOffer);
 
             masterList.setAll(repository.getAllOffers());
@@ -165,5 +165,33 @@ public class OffersController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void onUpdateOffer(ActionEvent actionEvent) {
+        Offer selected = lvOffers.getSelectionModel().getSelectedItem();
+        if(selected != null) {
+            try {
+                String name = tfName.getText();
+                int panels = Integer.parseInt(tfNoPanels.getText());
+                double power = Double.parseDouble(tfPowerPanel.getText());
+                double price = Double.parseDouble(tfTotal.getText());
+
+                selected.setName(name);
+                selected.setNumberOfPanels(panels);
+                selected.setPowerPerPanel(power);
+                selected.setTotalPrice(price);
+
+                repository.updateOffer(selected);
+
+                masterList.setAll(repository.getAllOffers());
+
+                updateSliderBounds();
+
+                clearDetails();
+                btnDelete.setDisable(true);
+            } catch (NumberFormatException e) {
+                alert("Fehler", "Ungültige Eingabe beim aktualisieren");
+            }
+        }
     }
 }
