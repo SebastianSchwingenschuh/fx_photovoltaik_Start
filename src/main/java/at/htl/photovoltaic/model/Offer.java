@@ -56,6 +56,6 @@ public class Offer {
 
     @Override
     public String toString() {
-        return String.format("%s, %.1f kWp, %.2f €", getName(), getPowerPerPanel() * getNumberOfPanels() / 1000.0, getTotalPrice());
+        return String.format("%s: %s, %.1f kWp, %.2f €", getId(), getName(), getPowerPerPanel() * getNumberOfPanels() / 1000.0, getTotalPrice());
     }
 }
