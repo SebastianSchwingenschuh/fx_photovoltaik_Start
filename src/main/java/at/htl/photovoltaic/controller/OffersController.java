@@ -1,7 +1,9 @@
 package at.htl.photovoltaic.controller;
 
 import at.htl.photovoltaic.model.Offer;
+import at.htl.photovoltaic.model.SortCriterion;
 import at.htl.photovoltaic.repository.OfferRepository;
+import at.htl.photovoltaic.service.OfferService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -12,7 +14,11 @@ import javafx.scene.control.*;
 import java.util.List;
 
 public class OffersController {
+    @FXML
+    public Button btnUpdate;
+
     private OfferRepository repository;
+    private OfferService offerService;
     private ObservableList<Offer> masterList;
     private FilteredList<Offer> filteredList;
 
@@ -50,7 +56,7 @@ public class OffersController {
     private Button btnDelete;
 
     @FXML
-    private ChoiceBox<?> cbTopOffer;
+    private ChoiceBox<SortCriterion> cbTopOffer;
 
     @FXML
     private TextArea taTopReport;
@@ -58,6 +64,7 @@ public class OffersController {
     @FXML
     void initialize() {
         repository = OfferRepository.getInstance();
+        offerService = new OfferService();
 
         List<Offer> allOffers = repository.getAllOffers();
         masterList = FXCollections.observableArrayList(allOffers);
@@ -79,11 +86,45 @@ public class OffersController {
             if (newVal != null) {
                 showDetails(newVal);
                 btnDelete.setDisable(false);
+                //TODO: theoretisch erst wenn das in den feldern anders ist als das selectete
+                btnUpdate.setDisable(false);
             } else {
                 clearDetails();
                 btnDelete.setDisable(true);
+                btnUpdate.setDisable(true);
             }
         });
+
+        cbTopOffer.getItems().addAll(SortCriterion.values());
+        cbTopOffer.setValue(SortCriterion.TOTAL_PRICE);
+
+        cbTopOffer.setOnAction(event -> {
+            updateTop3Report();
+        });
+
+        updateTop3Report();
+    }
+
+    private void updateTop3Report() {
+        SortCriterion selectedCriterion = cbTopOffer.getValue();
+        if(selectedCriterion == null){
+            return;
+        }
+
+        List<Offer> top3 = offerService.getTop3Offers(selectedCriterion);
+
+        StringBuilder report = new StringBuilder();
+
+        if(top3.isEmpty()){
+            report.append("Keine Angebote verfügbar");
+        } else {
+            for (int i = 0; i < top3.size(); i++) {
+                Offer offer = top3.get(i);
+
+                report.append(String.format("%d: %s\n", i + 1, offer.toString()));
+            }
+        }
+        taTopReport.setText(report.toString());
     }
 
     private void applyFilters() {
@@ -188,7 +229,7 @@ public class OffersController {
                 updateSliderBounds();
 
                 clearDetails();
-                btnDelete.setDisable(true);
+                btnUpdate.setDisable(true);
             } catch (NumberFormatException e) {
                 alert("Fehler", "Ungültige Eingabe beim aktualisieren");
             }

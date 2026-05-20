@@ -140,7 +140,7 @@
                <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                   <children>
                      <Button fx:id="btnCreate" mnemonicParsing="false" onAction="#onCreateOffer" text="Create New Offer" />
-                     <Button fx:id="btnUpdate" mnemonicParsing="false" onAction="#onUpdateOffer" text="Update Offer" />
+                     <Button fx:id="btnUpdate" disable="true" mnemonicParsing="false" onAction="#onUpdateOffer" text="Update Offer" />
                      <Button fx:id="btnDelete" disable="true" mnemonicParsing="false" onAction="#onDeleteOffer" text="Delete Offer" />
                   </children>
                   <opaqueInsets>
