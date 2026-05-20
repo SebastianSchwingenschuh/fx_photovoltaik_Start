@@ -1,7 +1,9 @@
 package at.htl.photovoltaic.controller;
 
 import at.htl.photovoltaic.model.Offer;
+import at.htl.photovoltaic.model.SortCriteria;
 import at.htl.photovoltaic.repository.OfferRepository;
+import at.htl.photovoltaic.service.OfferService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class OffersController {
     private OfferRepository repository;
+    private OfferService offerService;
     private ObservableList<Offer> masterList;
     private FilteredList<Offer> filteredList;
 
@@ -53,7 +56,7 @@ public class OffersController {
     private Button btnDelete;
 
     @FXML
-    private ChoiceBox<?> cbTopOffer;
+    private ChoiceBox<SortCriteria> cbTopOffer;
 
     @FXML
     private TextArea taTopReport;
@@ -61,6 +64,7 @@ public class OffersController {
     @FXML
     void initialize() {
         repository = OfferRepository.getInstance();
+        offerService = new OfferService();
 
         List<Offer> allOffers = repository.getAllOffers();
         masterList = FXCollections.observableArrayList(allOffers);
@@ -89,6 +93,36 @@ public class OffersController {
                 btnUpdate.setDisable(true);
             }
         }));
+
+        cbTopOffer.getItems().addAll(SortCriteria.values());
+        cbTopOffer.setValue(SortCriteria.TOTAL_PRICE);
+
+        cbTopOffer.setOnAction(event -> {
+            updateTop3Report();
+        });
+
+        updateTop3Report();
+    }
+
+    private void updateTop3Report() {
+        SortCriteria selectedCriteria = cbTopOffer.getValue();
+        if(selectedCriteria == null){
+            return;
+        }
+
+        List<Offer> top3 = offerService.getTop3Offers(selectedCriteria);
+
+        StringBuilder report = new StringBuilder();
+
+        if(top3.isEmpty()){
+            report.append("Keine Angebote verfügbar");
+        } else {
+            for (int i = 0; i < top3.size(); i++) {
+                Offer offer = top3.get(i);
+                report.append(offer.toString());
+            }
+        }
+        taTopReport.setText(report.toString());
     }
 
     private void alert(String title, String msg) {
@@ -123,6 +157,7 @@ public class OffersController {
         } else {
             slFilterPrice.setMax(repository.getMaximumPrice());
             slFilterPrice.setMin(repository.getMinimumPrice());
+            slFilterPrice.setValue(repository.getMaximumPrice());   //sonst muss man selber immer raufsetzen
         }
     }
 
