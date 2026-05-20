@@ -14,7 +14,7 @@ public class OfferRepository {
         offers = new ArrayList<>();
     }
 
-    public OfferRepository getInstance() {
+    public static OfferRepository getInstance() {
         if(instance == null){
             instance = new OfferRepository();
         }
@@ -57,5 +57,9 @@ public class OfferRepository {
                 .mapToDouble(Offer::getTotalPrice)
                 .min()
                 .orElse(0.0);
+    }
+
+    public List<Offer> getAllOffers() {
+        return new ArrayList<>(offers);
     }
 }
