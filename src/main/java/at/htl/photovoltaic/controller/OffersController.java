@@ -16,6 +16,8 @@ public class OffersController {
     private ObservableList<Offer> masterList;
     private FilteredList<Offer> filteredList;
 
+    @FXML
+    public Button btnUpdate;
 
     @FXML
     private Label welcomeText;
@@ -77,20 +79,19 @@ public class OffersController {
         }));
 
         lvOffers.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
-            if(newValue != null){
+            if (newValue != null) {
                 showDetails(newValue);
                 btnDelete.setDisable(false);
+                btnUpdate.setDisable(false);
             } else {
                 clearDetails();
                 btnDelete.setDisable(true);
+                btnUpdate.setDisable(true);
             }
         }));
-
-
-
     }
 
-    private void alert(String title, String msg){
+    private void alert(String title, String msg) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(Alert.AlertType.ERROR);
 
         alert.setTitle(title);
@@ -116,7 +117,7 @@ public class OffersController {
     }
 
     private void updateSliderBounds() {
-        if(masterList.isEmpty()) {
+        if (masterList.isEmpty()) {
             slFilterPrice.setMin(0);
             slFilterPrice.setMax(100);
         } else {
@@ -126,7 +127,7 @@ public class OffersController {
     }
 
     private void applyFilters() {
-        String nameFilter =tfFilterName.getText();
+        String nameFilter = tfFilterName.getText();
         double maxPrice = slFilterPrice.getValue();
 
         filteredList.setPredicate(offer -> {
@@ -161,7 +162,7 @@ public class OffersController {
     @FXML
     void onDeleteOffer(ActionEvent event) {
         Offer selected = lvOffers.getSelectionModel().getSelectedItem();
-        if(selected != null){
+        if (selected != null) {
             repository.deleteOffer(selected.getId());
             masterList.remove(selected);
             updateSliderBounds();
@@ -170,4 +171,25 @@ public class OffersController {
         }
     }
 
+    public void onUpdateOffer(ActionEvent actionEvent) {
+        Offer selected = lvOffers.getSelectionModel().getSelectedItem();
+
+        if(selected != null){
+            String name = tfName.getText();
+            int numberOfPanels = Integer.parseInt(tfNoPanels.getText());
+            double powerPerPanel = Double.parseDouble(tfPowerPanel.getText());
+            double totalPrice = Double.parseDouble(tfTotal.getText());
+
+            selected.setName(name);
+            selected.setNumberOfPanels(numberOfPanels);
+            selected.setPowerPerPanel(powerPerPanel);
+            selected.setTotalPrice(totalPrice);
+
+            repository.updateOffer(selected);
+            masterList.setAll(repository.getAllOffers());
+            updateSliderBounds();
+            clearDetails();
+            btnUpdate.setDisable(true);
+        }
+    }
 }
